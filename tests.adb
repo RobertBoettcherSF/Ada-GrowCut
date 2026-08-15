@@ -36,16 +36,18 @@ begin
    Assert(G(1,2).Strength >= 0.89 and G(1,2).Strength <= 0.91, "Strength decay incorrect");
    Put_Line("   PASS");
 
-   -- TEST 5: No Capture if Strength Weak
-   Put_Line("TEST 5 - No Capture if Strength Weak");
+   -- TEST 5: No Capture if Target Cell is Stronger
+   Put_Line("TEST 5 - No Capture if Target Cell is Stronger");
    G := Create_Empty_Grid;
-   G(2,2) := (Label => Background, Strength => 0.1);
+   G(1,1) := (Label => Foreground, Strength => 0.5);
+   G(2,2) := (Label => Background, Strength => 0.1); -- Attack strength = 0.09
    Run_Synchronous_Iteration(G);
-   Assert(G(1,1).Label = Unknown, "Empty cell captured by weak neighbor");
+   Assert(G(1,1).Label = Foreground, "Strong cell captured by weak neighbor");
    Put_Line("   PASS");
 
    -- TEST 6: Boundary Checks
    Put_Line("TEST 6 - Boundary Checks (Corner)");
+   G := Create_Empty_Grid;
    G(1,1) := (Label => Foreground, Strength => 1.0);
    Run_Synchronous_Iteration(G);
    Assert(G(1,2).Label = Foreground, "Corner neighbor not reached");
