@@ -3,9 +3,9 @@ with Ada.Assertions; use Ada.Assertions;
 with GrowCut; use GrowCut;
 
 procedure Tests is
-   -- Helper to create a test grid
+   -- Helper to create a test grid using nested array aggregates
    function Create_Empty_Grid return Grid_Type is
-      (1..3, 1..3 => (Label => Unknown, Strength => 0.0));
+      (1..3 => (1..3 => (Label => Unknown, Strength => 0.0)));
 
    G : Grid_Type := Create_Empty_Grid;
 begin
@@ -33,7 +33,6 @@ begin
 
    -- TEST 4: Strength Decay
    Put_Line("TEST 4 - Strength Decay");
-   -- 1.0 * 0.9 = 0.9
    Assert(G(1,2).Strength >= 0.89 and G(1,2).Strength <= 0.91, "Strength decay incorrect");
    Put_Line("   PASS");
 
@@ -82,7 +81,7 @@ begin
    -- TEST 11: Empty Input Handling
    Put_Line("TEST 11 - Empty Input Handling");
    declare
-      Empty : Grid_Type := (1..0, 1..0 => (Label => Unknown, Strength => 0.0));
+      Empty : Grid_Type := (1..0 => (1..0 => (Label => Unknown, Strength => 0.0)));
    begin
       Run_Synchronous_Iteration(Empty);
       Put_Line("   PASS (Handled empty array)");
@@ -90,8 +89,7 @@ begin
 
    -- TEST 12: Strength Clamping (Logic Check)
    Put_Line("TEST 12 - Strength Clamping");
-   G(1,1).Strength := 2.0; -- Should be handled by algorithm logic
-   -- Assuming our algorithm logic clamps implicitly by checking > strength
+   G(1,1).Strength := 2.0;
    Assert(G(1,1).Strength > 1.0, "Strength exceeds bound");
    Put_Line("   PASS");
 
